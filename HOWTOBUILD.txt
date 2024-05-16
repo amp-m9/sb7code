@@ -54,11 +54,11 @@ GLX headers and libs (generally included in Mesa packages), and GLFW. You can us
 the a snapshot of GLFW included in the archive, if you wish, but pre-compiled
 packages should be available through package management on most distributions.
 
-Once you have everything, you should enter the "build" directory in the source
-arvhive and issue:
-
+Once you have everything:
+    conan install . --output-folder=build --build=missing -c tools.system.package_manager:mode=install
+    cd build
     cmake ..
-    make
+    cmake --build .
 
 The examples will build into the 'bin' directory.
 

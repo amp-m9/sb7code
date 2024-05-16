@@ -4,6 +4,8 @@ project (superbible7)
 
 LINK_DIRECTORIES( ${CMAKE_SOURCE_DIR}/lib )
 
+set(CMAKE_TOOLCHAIN_FILE conan_toolchain.cmake)
+
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
@@ -16,6 +18,7 @@ foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
     set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_SOURCE_DIR}/lib )
 endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
 
+set(OpenGL_GL_PREFERENCE GLVND)
 find_package(OpenGL)
 
 set (CMAKE_DEBUG_POSTFIX "_d")
@@ -24,8 +27,9 @@ if(WIN32)
 set(COMMON_LIBS sb7 optimized glfw3 debug glfw3_d ${GLFW_LIBRARIES} ${OPENGL_LIBRARIES})
 elseif (UNIX)
 find_package(PkgConfig REQUIRED)
-pkg_check_modules(GLFW REQUIRED glfw3)
-set(COMMON_LIBS sb7 glfw3 X11 Xrandr Xinerama Xi Xxf86vm Xcursor GL rt dl)
+find_package(glfw3 REQUIRED)
+# pkg_check_modules(GLFW REQUIRED glfw3)
+set(COMMON_LIBS sb7 glfw X11 Xrandr Xinerama Xi Xxf86vm Xcursor GL rt dl)
 else()
 set(COMMON_LIBS sb7)
 endif()
@@ -130,6 +134,10 @@ set(EXAMPLES
   wrapmodes
 )
 
+SET(CHAPTERS
+  chapter1
+)
+
 find_package(OpenMP)
 if (OPENMP_FOUND)
     set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
@@ -137,13 +145,22 @@ if (OPENMP_FOUND)
 endif()
 
 foreach(EXAMPLE ${EXAMPLES})
-  add_executable(${EXAMPLE} WIN32 src/${EXAMPLE}/${EXAMPLE}.cpp)
+  add_executable(${EXAMPLE} WIN32 src/examples/${EXAMPLE}/${EXAMPLE}.cpp)
   set_property(TARGET ${EXAMPLE} PROPERTY DEBUG_POSTFIX _d)
   target_link_libraries(${EXAMPLE} ${COMMON_LIBS})
   if(MSVC)
     configure_file(${PROJECT_SOURCE_DIR}/build/templates/vs2013.vcxproj.user.in ${CMAKE_CURRENT_BINARY_DIR}/${EXAMPLE}.vcxproj.user @ONLY)
   endif(MSVC)
 endforeach(EXAMPLE)
+
+foreach(CHAPTER ${CHAPTERS})
+  add_executable(${CHAPTER} WIN32 src/chapters/${CHAPTER}/${CHAPTER}.cpp)
+  set_property(TARGET ${CHAPTER} PROPERTY DEBUG_POSTFIX _d)
+  target_link_libraries(${CHAPTER} ${COMMON_LIBS})
+  if(MSVC)
+    configure_file(${PROJECT_SOURCE_DIR}/build/templates/vs2013.vcxproj.user.in ${CMAKE_CURRENT_BINARY_DIR}/${CHAPTER}.vcxproj.user @ONLY)
+  endif(MSVC)
+endforeach(CHAPTER)
 
 IF (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_LINUX -std=c++0x")

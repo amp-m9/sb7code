@@ -23,7 +23,7 @@
 
 #include <sb7.h>
 
-#include <cmath>
+#include <math.h>
 
 static const unsigned char palette[] =
 {

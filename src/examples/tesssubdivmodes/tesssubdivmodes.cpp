@@ -22,7 +22,7 @@
  */
 
 #include <sb7.h>
-#include <cmath>
+#include <math.h>
 
 class tesssubdivmodes_app : public sb7::application
 {

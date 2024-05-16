@@ -24,7 +24,7 @@
 #include <sb7.h>
 #include <vmath.h>
 
-#include <cmath>
+#include <math.h>
 
 class gstessellate_app : public sb7::application
 {

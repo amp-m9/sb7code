@@ -25,7 +25,7 @@
 #include <sb7ktx.h>
 #include <vmath.h>
 
-#include <cmath>
+#include <math.h>
 
 // Random number generator
 static unsigned int seed = 0x13371337;
